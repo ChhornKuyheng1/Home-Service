@@ -19,30 +19,37 @@ import java.io.InputStream;
 public class FirebaseInitializer {
 
     @PostConstruct
-    public void initialize() throws IOException {
+    public void initialize() {
 
+        try {
 
-        String firebaseConfig = System.getenv("FIREBASE_CONFIG");
+            String firebaseConfig = System.getenv("FIREBASE_CONFIG");
 
-        if (firebaseConfig == null || firebaseConfig.isEmpty()) {
-            throw new RuntimeException("FIREBASE_CONFIG is missing in Railway environment");
+            if (firebaseConfig == null || firebaseConfig.isEmpty()) {
+                throw new RuntimeException("FIREBASE_CONFIG is missing in environment");
+            }
+
+            InputStream serviceAccount = new ByteArrayInputStream(
+                    firebaseConfig.getBytes(StandardCharsets.UTF_8)
+            );
+
+            if (FirebaseApp.getApps().isEmpty()) {
+
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .build();
+
+                FirebaseApp.initializeApp(options);
+            }
+
+            System.out.println(" Firebase Initialized Successfully!");
+
+        } catch (Exception e) {
+            System.err.println("Firebase init failed: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-
-        InputStream serviceAccount = new ByteArrayInputStream(
-                firebaseConfig.getBytes(StandardCharsets.UTF_8)
-        );
-
-
-        if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-
-            FirebaseApp.initializeApp(options);
-        }
-
-        System.out.println("Firebase Initialized Successfully!");
     }
+
 
 }
 
