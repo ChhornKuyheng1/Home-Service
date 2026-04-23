@@ -19,6 +19,10 @@ public class FirebaseInitializer {
 
         String firebaseConfig = System.getenv("FIREBASE_CONFIG");
 
+        if (firebaseConfig == null || firebaseConfig.isEmpty()) {
+            throw new RuntimeException("FIREBASE_CONFIG is missing in Railway environment");
+        }
+
         InputStream serviceAccount = new ByteArrayInputStream(
                 firebaseConfig.getBytes(StandardCharsets.UTF_8)
         );
@@ -30,6 +34,9 @@ public class FirebaseInitializer {
 
             FirebaseApp.initializeApp(options);
         }
+
+        System.out.println("Firebase Initialized Successfully!");
     }
+
 }
 
