@@ -11,11 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+
 @Component
 public class FirebaseInitializer {
 
     @PostConstruct
     public void initialize() throws IOException {
+
 
         String firebaseConfig = System.getenv("FIREBASE_CONFIG");
 
@@ -26,6 +31,7 @@ public class FirebaseInitializer {
         InputStream serviceAccount = new ByteArrayInputStream(
                 firebaseConfig.getBytes(StandardCharsets.UTF_8)
         );
+
 
         if (FirebaseApp.getApps().isEmpty()) {
             FirebaseOptions options = FirebaseOptions.builder()
