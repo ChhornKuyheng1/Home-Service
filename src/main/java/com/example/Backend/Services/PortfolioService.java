@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +31,8 @@ public class PortfolioService {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
 
     private String getPublicIdFromUrl(String url) {
         String[] parts = url.split("/");
@@ -56,7 +59,7 @@ public class PortfolioService {
                                            .crop("fill")
                                            )
                                            .generate(cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("public_id").toString()),
-                           LocalDate.now()
+                           LocalDate.now(cambodiaZone)
                    )
            );
            return CompletableFuture.completedFuture(ResponseEntity.ok(new Message("Successfully")));

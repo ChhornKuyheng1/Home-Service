@@ -347,6 +347,7 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "   WHERE address.user_id=:id " +
             "   AND address.status='Default' " +
             "   AND providers.status='Active' " +
+            "   AND providers.user_id !=:id " +
             "   GROUP BY providers.user_id, providers.business_name, users.profile, providers.service_radius, providers.lat, providers.lon " +
             ") as p " +
             "WHERE p.distance <= p.service_radius " +
@@ -373,6 +374,7 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "   AND address.status = 'Default' " +
             "   AND jobs.service_id = :service_id " +
             "   AND providers.status='Active' " +
+            "   AND providers.user_id !=:user_id " +
             "   GROUP BY providers.user_id, providers.business_name, users.profile, providers.service_radius, providers.lat, providers.lon " +
             ") AS p " +
             "WHERE p.distance <= p.serviceRadius " +
@@ -402,6 +404,7 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "   AND skills.id=:job_focus_id " +
             "   AND providers.status='Active' " +
             "   AND job_focus.status='Active' " +
+            "   AND providers.user_id !=:user_id " +
             "   GROUP BY providers.user_id, providers.business_name, users.profile, providers.service_radius, providers.lat, providers.lon " +
             ") AS p " +
             "WHERE p.distance <= p.serviceRadius " +
@@ -426,6 +429,7 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "   WHERE address.user_id =:user_id " +
             "   AND address.status = 'Default' " +
             "   AND providers.status='Active' " +
+            "   AND providers.user_id !=:user_id " +
             "   GROUP BY providers.user_id, providers.business_name, users.profile, providers.service_radius, providers.lat, providers.lon " +
             ") AS p " +
             "WHERE p.distance <= p.serviceRadius " +

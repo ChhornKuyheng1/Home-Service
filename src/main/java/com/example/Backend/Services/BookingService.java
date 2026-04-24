@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ public class BookingService {
     @Autowired
     private JobRepository jobRepository;
 
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
+
     @Async
     public  CompletableFuture<ResponseEntity<?>>  add(BookingRequest booking){
         User user = this.userService.getById(booking.getUserId());
@@ -74,7 +77,7 @@ public class BookingService {
                         jobFocus,
                         booking.getWorkDate(),
                         booking.getWorkTime(),
-                        LocalDateTime.now(),
+                        LocalDateTime.now(cambodiaZone),
                         "Requested",
                         address
 
@@ -97,7 +100,7 @@ public class BookingService {
         Booking booking = this.bookingRepository.findById(bookingId).orElse(null);
         if(booking == null) return CompletableFuture.completedFuture(ResponseEntity.status(404).body(new Message("No data")));
         booking.setStatus("Upcoming");
-        booking.setConfirmDate(LocalDateTime.now());
+        booking.setConfirmDate(LocalDateTime.now(cambodiaZone));
         this.bookingRepository.save(booking);
         NotificationService.sendMessage(
                 booking.getUser(),
@@ -116,7 +119,7 @@ public class BookingService {
         Booking booking = this.bookingRepository.findById(bookingId).orElse(null);
         if(booking == null) return CompletableFuture.completedFuture(ResponseEntity.status(404).body(new Message("No data")));
         booking.setStatus("In Progress");
-        booking.setInProgressDate(LocalDateTime.now());
+        booking.setInProgressDate(LocalDateTime.now(cambodiaZone));
         this.bookingRepository.save(booking);
         NotificationService.sendMessage(
                 booking.getUser(),
@@ -171,7 +174,7 @@ public class BookingService {
         if(booking==null) return CompletableFuture.completedFuture(ResponseEntity.status(404).body(new Message("No data")));
         booking.setStatus("Completed");
         booking.setFinalPrice(price);
-        booking.setCompleteDate(LocalDateTime.now());
+        booking.setCompleteDate(LocalDateTime.now(cambodiaZone));
         this.bookingRepository.save(booking);
         NotificationService.sendMessage(
                 booking.getUser(),

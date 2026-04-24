@@ -151,4 +151,53 @@ public class BackupService {
        }
     }
 
+    @Async
+    public CompletableFuture<ResponseEntity<?>> backupManualh() {
+        try {
+
+            String fileName = "backup_" + System.currentTimeMillis() + ".sql";
+
+            File backupDir = new File("backups");
+            if (!backupDir.exists()) {
+                backupDir.mkdirs();
+            }
+
+            String path = backupDir.getAbsolutePath() + "/" + fileName;
+
+            String mysqldumpPath = System.getenv("MYSQL_DUMP_PATH");
+            if (mysqldumpPath == null) {
+                mysqldumpPath = "mysqldump"; // fallback for Linux/server
+            }
+
+            ProcessBuilder pb = new ProcessBuilder(
+                    mysqldumpPath,
+                    "-u", "root",
+                    "-p12345",
+                    "camfix_db",
+                    "-r", path
+            );
+
+            pb.redirectErrorStream(true);
+
+            Process process = pb.start();
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                System.out.println("Backup successful: " + fileName);
+                return CompletableFuture.completedFuture(downloadManual(fileName));
+            }
+
+            return CompletableFuture.completedFuture(
+                    ResponseEntity.status(500)
+                            .body(new Message("Backup failed"))
+            );
+
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(
+                    ResponseEntity.status(500)
+                            .body(new Message(e.getMessage()))
+            );
+        }
+    }
+
 }

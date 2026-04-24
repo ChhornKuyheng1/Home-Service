@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +42,8 @@ public class ReviewService {
     @Autowired
     private Cloudinary cloudinary;
 
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
+
     private String getPublicIdFromUrl(String url) {
         String[] parts = url.split("/");
         String lastPart = parts[parts.length - 1];
@@ -56,7 +59,7 @@ public class ReviewService {
     public CompletableFuture<ResponseEntity<?>> add(Long bookingId, String review,int rate, List<MultipartFile> image)throws Exception{
         Booking booking = this.bookingRepository.findById(bookingId).orElse(new Booking());
         if(!booking.getStatus().equals("Completed")) return CompletableFuture.completedFuture(ResponseEntity.status(409).body(new Message("Booking is not complete")));
-        Review save = this.reviewRepository.save(new Review(booking,review,rate, LocalDate.now()));
+        Review save = this.reviewRepository.save(new Review(booking,review,rate, LocalDate.now(cambodiaZone)));
         if(image!=null ){
             image.forEach(
                     file -> {
@@ -67,7 +70,7 @@ public class ReviewService {
                                             .crop("fill")
                                            )
                                             .generate(cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("public_id").toString()),
-                                    LocalDate.now())
+                                    LocalDate.now(cambodiaZone))
                             );
                         } catch (IOException e) {
                             throw new RuntimeException(e);

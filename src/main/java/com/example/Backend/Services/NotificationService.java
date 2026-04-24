@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,8 @@ public class NotificationService {
     @Autowired
     private FCMService fcmService;
 
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
+
     @Async
     public  void sendMessage(User user,String title,String message,String type,Long referenceId){
         if(this.userRegistry.isOnline(user.getId().toString())){
@@ -62,7 +65,7 @@ public class NotificationService {
                             type,
                             referenceId,
                             false,
-                            LocalDateTime.now()
+                            LocalDateTime.now(cambodiaZone)
                     )
             );
             this.messagingTemplate.convertAndSendToUser(user.getId().toString(),
@@ -72,7 +75,7 @@ public class NotificationService {
                             message,
                             type,
                             referenceId,
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a"))
+                            LocalDateTime.now(cambodiaZone).format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a"))
                     )
             );
             this.fcmService.sendNotification(user.getFcmToken(),title,message,referenceId,type);
@@ -86,7 +89,7 @@ public class NotificationService {
                         type,
                         referenceId,
                         false,
-                        LocalDateTime.now()
+                        LocalDateTime.now(cambodiaZone)
                 )
         );
         this.fcmService.sendNotificationOffline(user.getFcmToken(),title,message,referenceId,type);

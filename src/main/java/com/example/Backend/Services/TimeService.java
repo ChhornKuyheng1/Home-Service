@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class TimeService {
 
     @Autowired
     private JobFocusRepository jobFocusRepository;
+
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
 
     private Map<LocalTime, JobFocus> workTimes = new ConcurrentHashMap<>();
 
@@ -393,8 +396,8 @@ public class TimeService {
 
         while (starTime.isBefore(endTime)){
 
-                if (LocalDate.now().equals(workDate)) {
-                    if (!starTime.isAfter(LocalTime.now())) {
+                if (LocalDate.now(this.cambodiaZone).equals(workDate)) {
+                    if (!starTime.isAfter(LocalTime.now(this.cambodiaZone))) {
                         starTime = starTime.plusHours(1);
                         continue;
                     }
@@ -455,8 +458,8 @@ public class TimeService {
 
             while (workTime.isBefore(endTime)){
 
-                if (LocalDate.now().equals(date)) {
-                    if (!workTime.isAfter(LocalTime.now())) {
+                if (LocalDate.now(this.cambodiaZone).equals(date)) {
+                    if (!workTime.isAfter(LocalTime.now(this.cambodiaZone))) {
                         workTime = workTime.plusHours(1);
                         continue;
                     }
@@ -521,8 +524,8 @@ public class TimeService {
 
        while (workTime.isBefore(endTime)) {
 
-           if (LocalDate.now().equals(date)) {
-               if (!workTime.isAfter(LocalTime.now())) {
+           if (LocalDate.now(this.cambodiaZone).equals(date)) {
+               if (!workTime.isAfter(LocalTime.now(this.cambodiaZone))) {
                    workTime = workTime.plusHours(1);
                    continue;
                }

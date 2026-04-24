@@ -67,6 +67,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,6 +113,8 @@ public class ProviderService {
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
 
     @Async
     public CompletableFuture<ResponseEntity<?>> getByUserId(Long userId) {
@@ -196,7 +199,7 @@ public class ProviderService {
             return CompletableFuture.completedFuture(ResponseEntity.status(404).body(new Message("No user data")));
         Provider providerExistion = this.providerRepository.findByUser_Id(userId).orElse(null);
         if (providerExistion == null) {
-            provider.setCreateDate(LocalDateTime.now());
+            provider.setCreateDate(LocalDateTime.now(cambodiaZone));
             provider.setUser(user);
             provider.setJobStatus("Pending");
             provider.setStatus("Inactive");
@@ -327,7 +330,7 @@ public class ProviderService {
                 return this.existionProvider(provider, idCard, profile, existion.get(), user);
             }
 
-            provider.setCreateDate(LocalDateTime.now());
+            provider.setCreateDate(LocalDateTime.now(cambodiaZone));
 
             provider.setUser(user);
 

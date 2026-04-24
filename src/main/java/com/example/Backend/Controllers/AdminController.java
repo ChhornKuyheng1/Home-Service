@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -41,6 +44,13 @@ public class AdminController {
 
     @Autowired
     private NotificationService notificationService;
+
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
+
+    @GetMapping("gg")
+    public String gg(){
+        return LocalDate.now(cambodiaZone).toString()+""+ LocalTime.now(cambodiaZone).toString();
+    }
 
     // Admin
 
