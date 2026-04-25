@@ -457,9 +457,10 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
                     "   WHERE (6371 * ACOS(COS(RADIANS(:userLat)) * COS(RADIANS(pr.lat)) * COS(RADIANS(pr.lon) - RADIANS(:userLon))+SIN(RADIANS(:userLat)) * SIN(RADIANS(pr.lat)))) <= pr.service_radius " +
                     "   AND pr.status='Active' " +
                     "   AND jf.status='Active' " +
+                    "   AND pr.user_id !=:user_id " +
                     "   GROUP BY s.id, s.name, s.image" +
                     ") AS p " ,nativeQuery = true)
-    List<ServiceNear> getServiceNear(@Param("userLat") Double userLat, @Param("userLon") Double userLon);
+    List<ServiceNear> getServiceNear(@Param("userLat") Double userLat, @Param("userLon") Double userLon,@Param("user_id") Long userId);
 
 
 

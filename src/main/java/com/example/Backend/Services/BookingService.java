@@ -578,7 +578,7 @@ public class BookingService {
                                     booking.getJobFocus().getSkill().getImage(),
                                     booking.getJobFocus().getJob().getService().getName(),
                                     booking.getJobFocus().getJob().getProvider().getBusinessName(),
-                                    booking.getJobFocus().getJob().getProvider().getProfile(),
+                                    booking.getJobFocus().getJob().getProvider().getUser().getProfile(),
                                     booking.getWorkDate(),
                                     booking.getWorkTime().format(DateTimeFormatter.ofPattern("h:mm a")),
                                     booking.getJobFocus().getPrice()+"-"+booking.getJobFocus().getPrice2(),
@@ -604,7 +604,7 @@ public class BookingService {
                                     booking.getJobFocus().getSkill().getImage(),
                                     booking.getJobFocus().getJob().getService().getName(),
                                     booking.getJobFocus().getJob().getProvider().getBusinessName(),
-                                    booking.getJobFocus().getJob().getProvider().getProfile(),
+                                    booking.getJobFocus().getJob().getProvider().getUser().getProfile(),
                                     booking.getWorkDate(),
                                     booking.getWorkTime().format(DateTimeFormatter.ofPattern("h:mm a")),
                                     booking.getJobFocus().getPrice()+"-"+booking.getJobFocus().getPrice2(),
@@ -653,7 +653,7 @@ public class BookingService {
                     ),
                     new ProviderBookingUserView(
                             booking.getJobFocus().getJob().getProvider().getBusinessName(),
-                            booking.getJobFocus().getJob().getProvider().getProfile(),
+                            booking.getJobFocus().getJob().getProvider().getUser().getProfile(),
                             rate,
                             (long)totalRation,
                             booking.getJobFocus().getJob().getProvider().getUser().getTel()
@@ -680,7 +680,7 @@ public class BookingService {
                 ),
                 new ProviderBookingUserView(
                         booking.getJobFocus().getJob().getProvider().getBusinessName(),
-                        booking.getJobFocus().getJob().getProvider().getProfile(),
+                        booking.getJobFocus().getJob().getProvider().getUser().getProfile(),
                         rate,
                         (long)totalRation,
                         booking.getJobFocus().getJob().getProvider().getUser().getTel()

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class SubscriptionService {
     @Autowired
     private ProviderRepository providerRepository;
 
+    private final ZoneId cambodiaZone = ZoneId.of("Asia/Phnom_Penh");
 
     private ResponseEntity<?> subscriptionForMonth(Provider provider ,Plan plan){
         LocalDate startDate = LocalDate.now();
@@ -74,7 +76,7 @@ public class SubscriptionService {
                 plan.getDuration(),
                 "Pending",
                 total,
-                LocalDateTime.now())
+                LocalDateTime.now(cambodiaZone))
         );
         this.messagingTemplate.convertAndSend("/queue/transaction", new Event(true));
         return ResponseEntity.ok(new SubscriptionResponse(transaction.getId(),plan.getName(), plan.getDuration(),startDate,endDate,total,true,"Full subscription"));
@@ -92,7 +94,7 @@ public class SubscriptionService {
                 plan.getDuration(),
                 "Pending",
                 total,
-                LocalDateTime.now())
+                LocalDateTime.now(cambodiaZone))
         );
         this.messagingTemplate.convertAndSend("/queue/transaction", new Event(true));
         return ResponseEntity.ok(new SubscriptionResponse(transaction.getId(),plan.getName(), plan.getDuration(),startDate,endDate,total,true,"Full subscription"));
@@ -117,7 +119,7 @@ public class SubscriptionService {
                 plan.getDuration(),
                 "Pending",
                 plan.getPrice(),
-                LocalDateTime.now()
+                LocalDateTime.now(cambodiaZone)
         ));
         return this.payment(save.getId());
     }
@@ -224,7 +226,7 @@ public class SubscriptionService {
                                     (float) transactions.getTotal(),
                                     transactions.getPayDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a")),
                                     transactions.getStatus(),
-                                    transactions.getProvider().getProfile()
+                                    transactions.getProvider().getUser().getProfile()
                             )
                     );
                 }
@@ -249,7 +251,7 @@ public class SubscriptionService {
                         transaction.getProvider().getEmail(),
                         transaction.getProvider().getUser().getDob(),
                         new AddressDto(transaction.getProvider().getLat(),transaction.getProvider().getLon()),
-                        transaction.getProvider().getProfile()
+                        transaction.getProvider().getUser().getProfile()
                 ),
                 new SubscriptionPlan(
                         transaction.getPlan().getName(),
@@ -273,7 +275,7 @@ public class SubscriptionService {
                            new SubscriptionListView(
                                    subscription.getId(),
                                    subscription.getProvider().getBusinessName(),
-                                   subscription.getProvider().getProfile(),
+                                   subscription.getProvider().getUser().getProfile(),
                                    subscription.getPlan().getName(),
                                    subscription.getPlan().getPrice(),
                                    subscription.getStatus(),
@@ -306,7 +308,7 @@ public class SubscriptionService {
                         subscription.getProvider().getUser().getTel(),
                         subscription.getProvider().getEmail(),
                         new AddressDto(subscription.getProvider().getLat(),subscription.getProvider().getLon()),
-                        subscription.getProvider().getProfile()
+                        subscription.getProvider().getUser().getProfile()
                 ),
                 new BillingInfo(price,subscription.getPlan().getDuration())
         )));

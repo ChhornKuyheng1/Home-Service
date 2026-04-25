@@ -1171,7 +1171,7 @@ public class ProviderService {
     public CompletableFuture<ResponseEntity<?>> getServiceNearCustomer(Long userId) {
         try {
             Address address = this.addressRepository.findByUser_IdAndStatus(userId, "Default");
-            return CompletableFuture.completedFuture(ResponseEntity.ok(this.providerRepository.getServiceNear(address.getLat(), address.getLon())));
+            return CompletableFuture.completedFuture(ResponseEntity.ok(this.providerRepository.getServiceNear(address.getLat(), address.getLon(),userId)));
         } catch (Exception e) {
             return CompletableFuture.completedFuture(
                     ResponseEntity.status(500).body(new Message(e.getMessage()))
