@@ -726,12 +726,13 @@ public class ProviderService {
         Provider provider = this.providerRepository.findById(id).orElse(new Provider());
         List<String> image = Arrays.asList(provider.getIdCard(), provider.getProfile());
         Long totalJob = this.providerRepository.countAllBookingByProviderId(id);
+        long complete = this.providerRepository.countAllCompletedBooking(id);
         double completeJob = 0.0;
         double totalRation = 0;
         long sumRation = 0;
         double rate = 0;
         if (this.providerRepository.countAllCompletedBooking(provider.getId()) > 0) {
-            completeJob = (double) this.providerRepository.countAllCompletedBooking(id) / totalJob * 100;
+            completeJob = (double) complete / totalJob * 100;
         }
         if (this.providerRepository.countRationByProviderId(id) != null)
             totalRation = this.providerRepository.countRationByProviderId(id);
@@ -750,7 +751,7 @@ public class ProviderService {
                 new ProviderAnalytics(
                         totalJob,
                         (long) completeJob,
-                        completeJob,
+                        complete,
                         rate
                 ),
                 new ProviderInformation(
