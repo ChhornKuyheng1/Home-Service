@@ -750,8 +750,8 @@ public class ProviderService {
                 ),
                 new ProviderAnalytics(
                         totalJob,
-                        (long) completeJob,
                         complete,
+                        completeJob,
                         rate
                 ),
                 new ProviderInformation(
