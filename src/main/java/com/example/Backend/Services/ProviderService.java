@@ -507,7 +507,7 @@ public class ProviderService {
                         );
                         double a = this.providerRepository.countBookingByService1Day(id, job.getService().getId(), LocalDate.now());
                         double b = this.providerRepository.countAllBookingByProviderId(id);
-                        double v = (a / b) * 100;
+                        double v = a / b;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),
@@ -551,7 +551,7 @@ public class ProviderService {
                         );
                         double a = this.providerRepository.countBookingByService7Day(id, job.getService().getId(), LocalDate.now(), LocalDate.now().minusDays(7), LocalDate.now().getMonthValue());
                         double b = this.providerRepository.countAllBookingByProviderId(id);
-                        double v = (a / b) * 100;
+                        double v = a / b;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),
@@ -596,7 +596,7 @@ public class ProviderService {
                         );
                         double a = this.providerRepository.countBookingByService1Month(id, job.getService().getId(), LocalDate.now().getMonthValue());
                         double b = this.providerRepository.countAllBookingByProviderId(id);
-                        double v = (a / b) * 100;
+                        double v = a / b;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),

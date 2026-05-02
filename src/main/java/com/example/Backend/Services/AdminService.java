@@ -98,7 +98,7 @@ public class AdminService {
                                booking.getJobFocus().getJob().getProvider().getBusinessName(),
                                booking.getBookingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a")),
                                booking.getJobFocus().getSkill().getName(),
-                               booking.getJobFocus().getJob().getProvider().getProfile(),
+                               booking.getJobFocus().getJob().getProvider().getUser().getProfile(),
                                booking.getStatus()
                        )
                     );
