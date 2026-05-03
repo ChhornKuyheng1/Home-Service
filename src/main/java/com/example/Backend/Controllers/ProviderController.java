@@ -28,6 +28,15 @@ public class ProviderController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/revenue/analytics/all")
+    public CompletableFuture<ResponseEntity<?>> revenueAnalyticsAllDay(@RequestParam Long id){
+        try {
+            return this.providerService.revenueAnalyticsAllDay(id);
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(ResponseEntity.status(500).body(new Message(e.getMessage())));
+        }
+    }
+
     @GetMapping("/revenue/analytics/1day")
     public CompletableFuture<ResponseEntity<?>> revenueAnalytics1Day(@RequestParam Long id){
         try {

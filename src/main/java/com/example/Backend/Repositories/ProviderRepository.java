@@ -34,6 +34,7 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
     List<Provider> findByjob_status(@Param("status") String status);
 
     //Revenue Analytics To Provider
+
     // 1 day
     @Query(value = "SELECT SUM(bookings.final_price) FROM bookings "+
             "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id "+
@@ -42,6 +43,14 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "AND bookings.status='Completed' " +
             "AND DATE(bookings.complete_date)=:date",nativeQuery = true)
     Double totalRevenue1Day(@Param("id") Long id, @Param("date") LocalDate date);
+
+    // All day
+    @Query(value = "SELECT SUM(bookings.final_price) FROM bookings "+
+            "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id "+
+            "INNER JOIN jobs ON jobs.id=job_focus.job_id "+
+            "WHERE jobs.provider_id=:id "+
+            "AND bookings.status='Completed'",nativeQuery = true)
+    Double totalRevenueAllDay(@Param("id") Long id);
 
     // 7 day
     @Query(value = "SELECT SUM(bookings.final_price) FROM bookings " +
@@ -110,6 +119,14 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "AND DATE(bookings.complete_date)=:date",nativeQuery = true)
     Double  maxPrice1Day(@Param("id") Long id, @Param("date") LocalDate date);
 
+    //Max Price All
+    @Query(value = "SELECT MAX(bookings.final_price) FROM bookings " +
+            "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id " +
+            "INNER JOIN jobs ON jobs.id=job_focus.job_id "+
+            "WHERE jobs.provider_id=:id " +
+            "AND bookings.status='Completed'",nativeQuery = true)
+    Double  maxPriceAll(@Param("id") Long id);
+
     // Max Price 7 Day
     @Query(value = "SELECT MAX(bookings.final_price) FROM bookings " +
             "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id " +
@@ -139,6 +156,15 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "AND jobs.service_id=:service " +
             "AND DATE(bookings.complete_date)=:date",nativeQuery = true)
     Long countBookingByService1Day(@Param("id")Long id,@Param("service")Long serviceId,@Param("date")LocalDate date);
+
+    // Top Service All
+    @Query(value = "SELECT COUNT(bookings.id) FROM bookings " +
+            "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id " +
+            "INNER JOIN jobs ON jobs.id=job_focus.job_id " +
+            "WHERE jobs.provider_id=:id " +
+            "AND bookings.status='Completed' " +
+            "AND jobs.service_id=:service ",nativeQuery = true)
+    Long countBookingByServiceAllDay(@Param("id")Long id,@Param("service")Long serviceId);
 
     // Top Service 7 Day
     @Query(value = "SELECT COUNT(bookings.id) FROM bookings " +
@@ -171,6 +197,16 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
             "AND jobs.service_id=:service " +
             "AND DATE(bookings.complete_date)=:date",nativeQuery = true)
     Double  totalPriceBookingByService1Day(@Param("id")Long id,@Param("service")Long serviceId,@Param("date")LocalDate date);
+
+    // Total Price By Service By All Day
+    @Query(value = "SELECT SUM(bookings.final_price) FROM bookings " +
+            "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id " +
+            "INNER JOIN jobs ON jobs.id=job_focus.job_id " +
+            "WHERE jobs.provider_id=:id " +
+            "AND bookings.status='Completed' " +
+            "AND jobs.service_id=:service",nativeQuery = true)
+    Double  totalPriceBookingByServiceAllDay(@Param("id")Long id,@Param("service")Long serviceId);
+
 
     // Total Price By Service By 7 Day
     @Query(value = "SELECT SUM(bookings.final_price) FROM bookings " +

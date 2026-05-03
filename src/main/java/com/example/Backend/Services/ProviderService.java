@@ -477,7 +477,54 @@ public class ProviderService {
         return this.providerRepository.findById(id).orElse(null);
     }
 
+
+
     //Revenue Analytics
+    @Async
+    public CompletableFuture<ResponseEntity<?>> revenueAnalyticsAllDay(Long id) {
+        double total = 0.0;
+        double maxPrice = 0;
+        double avg = 0;
+        if (this.providerRepository.totalRevenueAll(id)!=null) {
+            total = this.providerRepository.totalRevenueAll(id);
+            avg = total / this.providerRepository.countAllBookingByProviderId(id);
+        }
+        if (this.providerRepository.maxPriceAll(id) != null)
+            maxPrice = this.providerRepository.maxPriceAll(id);
+        List<TopServiceRevenue> topService = new ArrayList<>();
+        List<RevenueBreakdown> breakdowns = new ArrayList<>();
+        this.jobRepository.findByProvider_Id(id).forEach(
+                job -> {
+                    double totalPrice = 0;
+                    if (this.providerRepository.totalPriceBookingByServiceAllDay(id, job.getService().getId()) != null) {
+                        totalPrice = this.providerRepository.totalPriceBookingByServiceAllDay(id, job.getService().getId());
+                    }
+                    if (this.providerRepository.countBookingByService1Day(id, job.getService().getId(), LocalDate.now()) != 0) {
+                        topService.add(
+                                new TopServiceRevenue(
+                                        job.getService().getName(),
+                                        this.providerRepository.countBookingByServiceAllDay(id, job.getService().getId()),
+                                        totalPrice
+                                )
+                        );
+                        double a = this.providerRepository.countBookingByServiceAllDay(id, job.getService().getId());
+                        double b = this.providerRepository.countAllBookingByProviderId(id);
+                        double v = (a / b) * 100;
+                        breakdowns.add(
+                                new RevenueBreakdown(
+                                        job.getService().getName(),
+                                        (int) v
+                                ));
+                    }
+                }
+        );
+        return CompletableFuture.completedFuture(ResponseEntity.ok(new Revenue(
+                new TotalRevenue(total, avg, maxPrice),
+                topService,
+                breakdowns
+        )));
+    }
+
     @Async
     public CompletableFuture<ResponseEntity<?>> revenueAnalytics1Day(Long id) {
         double total = 0.0;
@@ -506,8 +553,8 @@ public class ProviderService {
                                 )
                         );
                         double a = this.providerRepository.countBookingByService1Day(id, job.getService().getId(), LocalDate.now());
-                        double b = this.providerRepository.countAllBookingByProviderId(id);
-                        double v = a / b * 100;
+                        double b = this.providerRepository.count1Day(id,LocalDate.now());
+                        double v = (a / b) * 100;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),
@@ -550,8 +597,8 @@ public class ProviderService {
                                 )
                         );
                         double a = this.providerRepository.countBookingByService7Day(id, job.getService().getId(), LocalDate.now(), LocalDate.now().minusDays(7), LocalDate.now().getMonthValue());
-                        double b = this.providerRepository.countAllBookingByProviderId(id);
-                        double v = a / b * 100;
+                        double b = this.providerRepository.count7Day(id,LocalDate.now(), LocalDate.now().minusDays(7), LocalDate.now().getMonthValue());
+                        double v = (a / b)*100;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),
@@ -595,8 +642,8 @@ public class ProviderService {
                                 )
                         );
                         double a = this.providerRepository.countBookingByService1Month(id, job.getService().getId(), LocalDate.now().getMonthValue());
-                        double b = this.providerRepository.countAllBookingByProviderId(id);
-                        double v = a / b *100;
+                        double b = this.providerRepository.count1Month(id,LocalDate.now().getMonthValue());
+                        double v = (a / b)*100 ;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),
