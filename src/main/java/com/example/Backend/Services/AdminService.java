@@ -191,4 +191,17 @@ public class AdminService {
             return CompletableFuture.completedFuture(ResponseEntity.status(500).body(new Message(e.getMessage())));
         }
     }
+
+    @Async
+    public CompletableFuture<ResponseEntity<?>> chengPassword(String email,String password){
+        try{
+            Admin admin = this.adminRepository.findByEmail(email);
+            if(admin == null) return CompletableFuture.completedFuture(ResponseEntity.status(404).body(new Message("No data")));
+            admin.setPassword(this.passwordEncoder.encode(password));
+            this.adminRepository.save(admin);
+            return CompletableFuture.completedFuture(ResponseEntity.ok(new Message("Successfully")));
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(ResponseEntity.status(500).body(new Message(e.getMessage())));
+        }
+    }
 }

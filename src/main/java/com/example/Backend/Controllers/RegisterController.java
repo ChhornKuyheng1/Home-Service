@@ -38,6 +38,11 @@ public class RegisterController {
         }
     }
 
+    @PutMapping("/admin/cheng/password")
+    public CompletableFuture<ResponseEntity<?>>AdminChengPassword(@RequestParam String email ,@RequestParam String password){
+       return this.adminService.chengPassword(email,password);
+    }
+
     //User Login
     @GetMapping("/user/login")
     public  CompletableFuture<ResponseEntity<?>> userLogin(@RequestParam String tel){
