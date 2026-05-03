@@ -487,19 +487,19 @@ public class ProviderService {
         double avg = 0;
         if (this.providerRepository.totalRevenueAll(id)!=null) {
             total = this.providerRepository.totalRevenueAll(id);
-            avg = total / this.providerRepository.countAllBookingByProviderId(id);
+            avg = (total / this.providerRepository.countAllBookingByProviderId(id));
         }
-        if (this.providerRepository.maxPriceAll(id) != null)
-            maxPrice = this.providerRepository.maxPriceAll(id);
+        if (this.providerRepository.maxPriceAll(id) != null) maxPrice = this.providerRepository.maxPriceAll(id);
+
         List<TopServiceRevenue> topService = new ArrayList<>();
+
         List<RevenueBreakdown> breakdowns = new ArrayList<>();
+
         this.jobRepository.findByProvider_Id(id).forEach(
                 job -> {
                     double totalPrice = 0;
-                    if (this.providerRepository.totalPriceBookingByServiceAllDay(id, job.getService().getId()) != null) {
-                        totalPrice = this.providerRepository.totalPriceBookingByServiceAllDay(id, job.getService().getId());
-                    }
-                    if (this.providerRepository.countBookingByService1Day(id, job.getService().getId(), LocalDate.now()) != 0) {
+                    if (this.providerRepository.totalPriceBookingByServiceAllDay(id, job.getService().getId()) != null) totalPrice = this.providerRepository.totalPriceBookingByServiceAllDay(id, job.getService().getId());
+                    if (this.providerRepository.countBookingByServiceAllDay(id, job.getService().getId()) != 0) {
                         topService.add(
                                 new TopServiceRevenue(
                                         job.getService().getName(),
@@ -508,7 +508,7 @@ public class ProviderService {
                                 )
                         );
                         double a = this.providerRepository.countBookingByServiceAllDay(id, job.getService().getId());
-                        double b = this.providerRepository.countAllBookingByProviderId(id);
+                        double b = this.providerRepository.countAllCompletedBooking(id);
                         double v = (a / b) * 100;
                         breakdowns.add(
                                 new RevenueBreakdown(
@@ -643,7 +643,7 @@ public class ProviderService {
                         );
                         double a = this.providerRepository.countBookingByService1Month(id, job.getService().getId(), LocalDate.now().getMonthValue());
                         double b = this.providerRepository.count1Month(id,LocalDate.now().getMonthValue());
-                        double v = (a / b)*100 ;
+                        double v = (a / b) * 100 ;
                         breakdowns.add(
                                 new RevenueBreakdown(
                                         job.getService().getName(),

@@ -102,7 +102,7 @@ public interface ProviderRepository extends JpaRepository<Provider,Long> {
     Long count7Day(@Param("id") Long id,@Param("date1") LocalDate date1,@Param("date2")LocalDate date2,@Param("month") int month);
 
     //Count 1 Month
-    @Query(value = "SELECT SUM(bookings.final_price) FROM bookings " +
+    @Query(value = "SELECT COUNT(bookings.id) FROM bookings " +
             "INNER JOIN job_focus ON job_focus.id=bookings.job_focus_id " +
             "INNER JOIN jobs ON jobs.id=job_focus.job_id " +
             "WHERE bookings.status='Completed' " +
