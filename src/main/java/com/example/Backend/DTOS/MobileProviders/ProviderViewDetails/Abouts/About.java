@@ -9,14 +9,24 @@ public class About {
     private String tel;
     private AddressDto address;
     private WorkingInfo workingInfo;
+    private String email;
     private List<String> services;
 
-    public About(String about, String tel, AddressDto address, WorkingInfo workingInfo, List<String> services) {
+    public About(String about, String tel, AddressDto address, WorkingInfo workingInfo, List<String> services,String email) {
         this.about = about;
         this.tel = tel;
         this.address = address;
         this.workingInfo = workingInfo;
         this.services = services;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAbout() {

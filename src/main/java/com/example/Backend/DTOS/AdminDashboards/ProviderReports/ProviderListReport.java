@@ -10,8 +10,10 @@ public class ProviderListReport {
     private Long complete;
     private Long cancel;
     private String joinDate;
+    private double rate;
+    private double amount;
 
-    public ProviderListReport(Long id, String name, String tel, String email, Long booked, Long complete, Long cancel, String joinDate) {
+    public ProviderListReport(Long id, String name, String tel, String email, Long booked, Long complete, Long cancel, String joinDate,double rate,double amount) {
         this.id = id;
         this.name = name;
         this.tel = tel;
@@ -20,6 +22,24 @@ public class ProviderListReport {
         this.complete = complete;
         this.cancel = cancel;
         this.joinDate = joinDate;
+        this.rate = rate;
+        this.amount = amount;
+    }
+
+    public double getAmount() {
+        return Math.round(this.amount*100.0) / 100.0;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
     }
 
     public Long getId() {

@@ -10,8 +10,9 @@ public class Insights {
     private int completion;
     private int jobActive;
     private int jobUse;
+    private Long totalJob;
     private List<TopServiceInsights> topService;
-    public Insights(Long jobDone, double avg, double rate, int completion, int jobActive, int jobUse,List<TopServiceInsights> topService,Long totalRate) {
+    public Insights(Long jobDone, double avg, double rate, int completion, int jobActive, int jobUse,List<TopServiceInsights> topService,Long totalRate,long totalJob) {
         this.jobDone = jobDone;
         this.avg = avg;
         this.rate = rate;
@@ -20,6 +21,15 @@ public class Insights {
         this.jobUse = jobUse;
         this.topService = topService;
         this.totalRate = totalRate;
+        this.totalJob = totalJob;
+    }
+
+    public Long getTotalJob() {
+        return totalJob;
+    }
+
+    public void setTotalJob(Long totalJob) {
+        this.totalJob = totalJob;
     }
 
     public int getJobActive() {
@@ -47,7 +57,7 @@ public class Insights {
     }
 
     public double getAvg() {
-        return avg;
+        return Math.round(this.avg*100.0) / 100.0;
     }
 
     public void setAvg(double avg) {

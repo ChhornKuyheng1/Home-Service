@@ -665,13 +665,7 @@ public class ProviderService {
         double totalJob = this.providerRepository.countAllCompletedBooking(id);
         double totalBooking = 0;
         double avg = 0;
-        double price = 0;
-        if (this.providerRepository.totalPriceCompleted(id) != null)
-            price = this.providerRepository.totalPriceCompleted(id);
-        if (this.providerRepository.countAllBookingByProviderId(id) > 0) {
-            totalBooking = this.providerRepository.countAllBookingByProviderId(id);
-            avg = price / totalBooking * 100;
-        }
+        if (this.providerRepository.findAvg(id) != null) avg = this.providerRepository.findAvg(id);
         double jobActive = this.providerRepository.totalJobFocusActive(id);
         Long totalJobFocus = this.providerRepository.totalJobFocus(id);
         List<TopServiceInsights> topService = new ArrayList<>();
@@ -679,8 +673,7 @@ public class ProviderService {
         if (this.providerRepository.countAllCompletedBooking(id) != null) v = totalJob / totalBooking * 100;
         double f = jobActive / totalJobFocus * 100;
         double totalRate = 0;
-        if (this.providerRepository.countRationByProviderId(id) != null)
-            totalRate = this.providerRepository.countRationByProviderId(id);
+        if (this.providerRepository.countRationByProviderId(id) != null) totalRate = this.providerRepository.countRationByProviderId(id);
         long sumRate = 0;
         double rate = 0;
         if (this.providerRepository.sumRationByProviderId(id) != null) {
@@ -706,8 +699,8 @@ public class ProviderService {
                 (int) jobActive,
                 (int) f,
                 topService,
-                (long) totalRate
-
+                (long) totalRate,
+                this.providerRepository.countAllBookingByProviderId(id)
         )));
     }
 
@@ -1119,7 +1112,8 @@ public class ProviderService {
                         provider.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")),
                         provider.getEndTime().format(DateTimeFormatter.ofPattern("h:mm a"))
                 ),
-                topSkills
+                topSkills,
+                provider.getEmail()
         )));
     }
 
@@ -1182,6 +1176,17 @@ public class ProviderService {
             List<ProviderListReport> providers = new ArrayList<>();
             this.providerRepository.findAll().forEach(
                     provider -> {
+                        double totalRation = 0;
+                        long sumRation = 0;
+                        double rate = 0;
+                        double amount = 0;
+                        if(this.providerRepository.totalPriceCompleted(provider.getId())!=null) amount = this.providerRepository.totalPriceCompleted(provider.getId());
+                        if (this.providerRepository.countRationByProviderId(provider.getId()) != null)
+                            totalRation = this.providerRepository.countRationByProviderId(provider.getId());
+                        if (this.providerRepository.sumRationByProviderId(provider.getId()) != null) {
+                            sumRation = this.providerRepository.sumRationByProviderId(provider.getId());
+                            rate = sumRation / totalRation;
+                        }
                         providers.add(
                                 new ProviderListReport(
                                         provider.getId(),
@@ -1191,8 +1196,9 @@ public class ProviderService {
                                         this.providerRepository.countAllBookingByProviderId(provider.getId()),
                                         this.providerRepository.countAllCompletedBooking(provider.getId()),
                                         this.providerRepository.countAllCancelledBooking(provider.getId()),
-                                        provider.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a"))
-
+                                        provider.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a")),
+                                        rate,
+                                        amount
                                 )
                         );
                     }
